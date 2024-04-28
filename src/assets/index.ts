@@ -1,0 +1,1 @@
+export { default as BgImage } from './bg-image.jpg'
