@@ -1,1 +1,7 @@
 export { default as BgImage } from './bg-image.jpg'
+export { default as NextImage } from './next.svg'
+export { default as StartImage } from './start.svg'
+export { default as FinishImage } from './finish.svg'
+export { default as Logo } from './logo.svg'
+export { default as PinkNextImage } from './pink-next.svg'
+export { default as CyanNextImage } from './cyan-next.svg'

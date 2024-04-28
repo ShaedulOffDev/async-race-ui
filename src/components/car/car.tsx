@@ -4,15 +4,17 @@ import { CarI } from "../../types";
 interface CarProps {
   car: CarI;
   removeHandler: (id: number) => void;
+  selectedCarHandler: (id: number) => void;
 }
 
-const Car: React.FC<CarProps> = ({ car, removeHandler }) => {
+const Car: React.FC<CarProps> = ({ car, removeHandler, selectedCarHandler }) => {
   return (
     <div className="py-3 w-full flex">
       <div className="flex items-center w-[220px]">
         <div className="me-3">
           <div className="inline-flex gap-2 flex-col me-2">
             <button
+              onClick={() => selectedCarHandler(car.id)}
               className="px-3 py-1 border-2 text-[#BCE4ED] border-[#BCE4ED] text-[12px] rounded-md uppercase"
               style={{ boxShadow: "0 0 5px 1px #BCE4ED" }}
             >

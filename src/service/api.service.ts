@@ -47,3 +47,19 @@ export const createCar = async (name: string, color: string) => {
     return false;
   }
 };
+
+export const updateCar = async (id:number, name: string, color: string) => {
+  try {
+    const res = await fetch(`http://localhost:3000/garage/${id}`, {
+      method: "put",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, color }),
+    }).then((res) => res.json());
+    return res;
+  } catch (error) {
+    console.error("Failed to fetch");
+    return false;
+  }
+};
