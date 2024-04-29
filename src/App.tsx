@@ -23,13 +23,13 @@ const App = () => {
           </Link>
         </div>
         <div className="flex">
-          <div className="flex items-end">
+          <div className="flex items-end py-5">
             <img width={400} src={PinkNextImage} alt="Pink next image" />
           </div>
-          <div className="mx-5">
+          <div className="mx-5" style={{filter: 'drop-shadow(0 0 30px #985fb0)'}}>
             <img width={400} src={Logo} alt="logo" />
           </div>
-          <div>
+          <div className="py-5">
             <img width={400} src={CyanNextImage} alt="Cyan next image" />
           </div>
         </div>

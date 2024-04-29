@@ -35,6 +35,8 @@ const Garage = () => {
         const fetchCar = await getCar(res.id);
         dispatch(setCar(fetchCar));
       }
+      setName('')
+      setColor('#000000')
     } else {
       console.log("please enter a car name");
     }
@@ -60,7 +62,10 @@ const Garage = () => {
   const updateCarFromSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if(selectedCar){
-      updateCar(selectedCar, updateCarName, updateCarColor)
+      await updateCar(selectedCar, updateCarName, updateCarColor)
+      await fetchCars();
+      setUpdateCarColor('#000000')
+      setUpdateCarName('')
     }
   }
   return (

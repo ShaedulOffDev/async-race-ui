@@ -63,3 +63,11 @@ export const updateCar = async (id:number, name: string, color: string) => {
     return false;
   }
 };
+
+export const toggleEngine = async (id:number, status: string) => {
+  const queryParams = new URLSearchParams({ "id": `${id}`, status });
+  const res = await fetch(`http://localhost:3000/engine/?${queryParams}`, {
+    method: "PATCH",
+  })
+  return res.json();
+};
