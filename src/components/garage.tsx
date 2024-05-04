@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { createCar, createWinner, getCar, getCars, getCarsCount, getWinner, removeCar, updateCar, updateWinner } from "../../service/api.service";
-import { RootState } from "../../store";
+import { createCar, createWinner, getCar, getCars, getCarsCount, getWinner, removeCar, updateCar, updateWinner } from "../service/api.service";
+import { RootState } from "../store";
 import React, { useCallback, useEffect, useState } from "react";
-import { setBestTime, setCar, setCars, setMatch, setStatus, setWinner } from "../../slice";
-import { Car } from "../";
-import { FinishImage, NextImage, StartImage } from "../../assets";
-import { carNames, colors } from "../../constants";
+import { resetAll, setCar, setCars, setStatus, setWinner } from "../slice";
+import { Car } from "./";
+import { FinishImage, NextImage, StartImage } from "../assets";
+import { carNames, colors } from "../constants";
 
 interface winnerI {
   winnerCarName: string;
@@ -14,7 +14,7 @@ interface winnerI {
 
 const Garage = () => {
   const dispatch = useDispatch();
-  const { cars, winner, bestTime, isMatchEnded } = useSelector((state: RootState) => state.cars);
+  const { cars, winner, bestTime } = useSelector((state: RootState) => state.cars);
   const [name, setName] = useState<string>("");
   const [color, setColor] = useState<string>("#000000");
   const [page, setPage] = useState<number>(1);
@@ -32,29 +32,23 @@ const Garage = () => {
 
   useEffect(() => {
     async function winnerHandler() {
-      if (!isMatchEnded && winner != null) {
+      if (!raceStatus && winner != null) {
         setRaceStatus(true);
-        await getWinner(winner)
-          .then((res) => res.json())
-          .then(async(res) => {
-            if (res.wins) {
-              const wins: number = res.wins + 1;
-              updateWinner(winner, wins, bestTime);
-            } else {
-              createWinner(winner, 1, bestTime);
-            }
-            const car = await getCar(winner)
-            const winnerCar = {winnerCarName: car.name, time: bestTime}
-            setWinnerInfo(winnerCar)
-            setWinnerModal(true)
-          });
-        dispatch(setStatus(null));
-        dispatch(setMatch(true));
-        dispatch(setWinner(null));
-        dispatch(setBestTime(0));
+        const res = await getWinner(winner);
+        if (res.wins) {
+          const wins: number = res.wins + 1;
+          updateWinner(winner, wins, bestTime);
+        } else {
+          createWinner(winner, 1, bestTime);
+        }
+        const car = await getCar(winner);
+        const winnerCar = { winnerCarName: car.name, time: bestTime };
+        setWinnerInfo(winnerCar);
+        setWinnerModal(true);
       }
     }
     winnerHandler();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [winner]);
 
   const fetchCars = useCallback(async () => {
@@ -68,17 +62,13 @@ const Garage = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (name != "") {
-      const res = await createCar(name, color);
-      if (cars.length < limit) {
-        const fetchCar = await getCar(res.id);
-        dispatch(setCar(fetchCar));
-      }
-      setName("");
-      setColor("#000000");
-    } else {
-      console.log("please enter a car name");
+    const res = await createCar(name, color);
+    if (cars.length < limit) {
+      const fetchCar = await getCar(res.id);
+      dispatch(setCar(fetchCar));
     }
+    setName("");
+    setColor("#000000");
   };
 
   const removeHandler = async (id: number) => {
@@ -125,30 +115,28 @@ const Garage = () => {
       return generateRandomCars(array, randomArray);
     }
   };
-  const randomHandler = () => {
+  const randomHandler = async () => {
     const randomCars = generateRandomCars(carNames, []);
-    randomCars.forEach((r) => {
+    const createCarPromises = randomCars.map(async (r) => {
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      createCar(r, randomColor);
+      await createCar(r, randomColor);
     });
-    fetchCars()
+    await Promise.all(createCarPromises);
+    await fetchCars();
   };
   const startRace = () => {
-    setWinnerModal(false)
+    setWinnerModal(false);
     dispatch(setStatus("reset"));
+    setRaceStatus(false);
     setTimeout(() => {
       dispatch(setWinner(null));
       dispatch(setStatus("started"));
-      dispatch(setMatch(false));
-      setRaceStatus(false);
-    }, 1000);
+    }, 800);
   };
   const resetRace = () => {
-    setWinnerModal(false)
+    setWinnerModal(false);
     setRaceStatus(true);
-    dispatch(setWinner(null));
-    dispatch(setStatus("reset"));
-    dispatch(setMatch(true));
+    dispatch(resetAll());
   };
   useEffect(() => {
     getCarsCount()
@@ -199,11 +187,12 @@ const Garage = () => {
             onChange={(e) => setUpdateCarName(e.target.value)}
             type="text"
             name="updateCarInput"
-            className="border bg-transparent outline-none rounded-md px-2 py-1 text-white max-w-[200px]"
+            className="border disabled:opacity-50 bg-transparent outline-none rounded-md px-2 py-1 text-white max-w-[200px]"
             placeholder="TYPE CAR BRAND"
+            disabled={selectedCar == null}
           />
-          <input className="w-[30px]" value={updateCarColor} onChange={(e) => setUpdateCarColor(e.target.value)} type="color" name="color" />
-          <button className="px-3 py-1 border-2 border-[#985FB0] text-[#985fb0] rounded-md uppercase" style={{ boxShadow: "0 0 5px 1px #985FB0" }}>
+          <input className="w-[30px] disabled:opacity-50" disabled={selectedCar == null} value={updateCarColor} onChange={(e) => setUpdateCarColor(e.target.value)} type="color" name="color" />
+          <button className="px-3 py-1 disabled:opacity-50 border-2 border-[#985FB0] text-[#985fb0] rounded-md uppercase" style={{ boxShadow: "0 0 5px 1px #985FB0" }} disabled={selectedCar == null}>
             UPDATE
           </button>
         </form>
@@ -242,7 +231,9 @@ const Garage = () => {
         </div>
         <img src={NextImage} alt="next image" className="w-full" />
         <div
-          className={`${!winnerModal && "hidden"} absolute after:border-4 after:border-[#56DBEA] after:absolute after:w-[95%] after:h-[93%] after:top-[3.5%] after:left-[2.5%] after:rounded-xl text-4xl top-[50%] left-[50%] text-center translate-x-[-50%] translate-y-[-50%] border-4 border-[#A04FA9] px-10 py-12  backdrop-blur-sm rounded-2xl`}
+          className={`${
+            !winnerModal && "hidden"
+          } z-[99999] absolute after:border-4 after:border-[#56DBEA] after:absolute after:w-[95%] after:h-[93%] after:top-[3.5%] after:left-[2.5%] after:rounded-xl text-4xl top-[50%] left-[50%] text-center translate-x-[-50%] translate-y-[-50%] border-4 border-[#A04FA9] px-10 py-12  backdrop-blur-sm rounded-2xl`}
           style={{ boxShadow: "0 0 20px 0 #a04fa9" }}
         >
           <span className="block uppercase text-yellow-500 mb-3">winner:</span>

@@ -6,7 +6,6 @@ interface CarsState {
   winner: null | number;
   status: string | null;
   bestTime: number;
-  isMatchEnded: boolean;
 }
 
 const initialState: CarsState = {
@@ -14,7 +13,6 @@ const initialState: CarsState = {
   winner: null,
   status: null,
   bestTime: 0,
-  isMatchEnded: true,
 };
 
 const cars = createSlice({
@@ -36,11 +34,13 @@ const cars = createSlice({
     setBestTime: (state, action: PayloadAction<number>) => {
       state.bestTime = action.payload;
     },
-    setMatch: (state, action: PayloadAction<boolean>) => {
-      state.isMatchEnded = action.payload;
-    },
+    resetAll: (state) => {
+      state.bestTime = 0
+      state.winner = null
+      state.status = 'reset'
+    }
   },
 });
 
-export const { setCars, setCar, setStatus, setWinner, setBestTime, setMatch } = cars.actions;
+export const { resetAll, setCars, setCar, setStatus, setWinner, setBestTime } = cars.actions;
 export default cars.reducer;

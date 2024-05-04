@@ -13,16 +13,11 @@ export const getCar = async (id: number) => {
   const res = await fetch(`http://localhost:3000/garage/${id}`, { method: "get" }).then((res) => res.json());
   return res;
 };
-interface i {
-  wins: number,
-  time: number,
-  id: number,
-}
+
 export const removeCar = async (id: number) => {
   await fetch(`http://localhost:3000/garage/${id}`, { method: "delete" });
-  let winner:null|i = null!;
-  await getWinner(id).then(res => res.json()).then(res => winner = res)
-  if(winner != null && Object.keys(winner).length != 0){
+  const winner = await getWinner(id)
+  if(Object.keys(winner).length != 0){
     deleteWinner(id);
   }
 };
@@ -80,7 +75,7 @@ export const createWinner = async (id: number, wins: number, time: number) => {
 export const getWinner = async (id: number) => {
   const res = await fetch(`http://localhost:3000/winners/${id}`, {
     method: "get",
-  });
+  }).then(res => res.json());
   return res;
 };
 
@@ -109,3 +104,18 @@ export const deleteWinner = async (id: number) => {
   });
   return res;
 };
+
+export const getWinners = async (page: number, limit: number, sort: string, order: string) => {
+  const res = await fetch(`http://localhost:3000/winners/?_limit=${limit}&_page=${page}&_sort=${sort}&_order=${order}`, { method: "get" }).then(
+    (res) => res.json()
+  );
+  return res;
+};
+
+export const getTotalWinners = async () => {
+  const res = await fetch(`http://localhost:3000/winners`, { method: "get" }).then(
+    (res) => res.json()
+  );
+  return res.length;
+};
+

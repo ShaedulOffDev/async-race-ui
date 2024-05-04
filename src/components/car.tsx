@@ -1,22 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { CarI } from "../../types";
-import { toggleEngine } from "../../service/api.service";
+import { CarI } from "../types";
+import { toggleEngine } from "../service/api.service";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { setBestTime, setStatus, setWinner } from "../../slice";
+import { RootState } from "../store";
+import { setBestTime, setStatus, setWinner } from "../slice";
 
 interface CarProps {
   car: CarI;
   removeHandler: (id: number) => void;
   selectedCarHandler: (id: number) => void;
 }
-
 const Car: React.FC<CarProps> = ({ car, removeHandler, selectedCarHandler }) => {
   const [position, setPosition] = useState<number>(0);
   const [transition, setTransition] = useState<number>(0);
   const [engineStatus, setEngineStatus] = useState<string>("stopped");
   const ref = useRef<null | NodeJS.Timeout>(null);
-  const {status, isMatchEnded,winner} = useSelector((state: RootState) => state.cars);
+  const {status, winner} = useSelector((state: RootState) => state.cars);
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -49,7 +48,7 @@ const Car: React.FC<CarProps> = ({ car, removeHandler, selectedCarHandler }) => 
     try {
       await drive(id);
       toggleEngine(id, "stopped");
-      if(winner == null && !isMatchEnded){
+      if(winner == null){
         dispatch(setWinner(id))
         dispatch(setStatus('stopped'))
         const bestTime = (res.distance / res.velocity / 1000).toFixed(2)
@@ -61,11 +60,11 @@ const Car: React.FC<CarProps> = ({ car, removeHandler, selectedCarHandler }) => 
     }
   };
   const stopEngineHandler = async (id: number) => {
+    await toggleEngine(id, "stopped");
     setEngineStatus('stopped')
     clearInterval(ref.current as NodeJS.Timeout);
     setPosition(0);
     setTransition(0);
-    await toggleEngine(id, "stopped");
   };
 
   return (
