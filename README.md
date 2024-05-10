@@ -111,7 +111,7 @@ Also, please deploy the UI to GitHub Pages, Netlify, Vercel, Cloudflare Pages, o
 
 ## ✅ Requirements to Commits and Repository
 
-- [ ] **Commit guidelines compliance:** Ensure that all commits follow the specified commit guidelines, thereby promoting a clear and consistent commit history. This includes using meaningful commit messages that accurately describe the changes made.
+- [✅] **Commit guidelines compliance:** Ensure that all commits follow the specified commit guidelines, thereby promoting a clear and consistent commit history. This includes using meaningful commit messages that accurately describe the changes made.
 
 - [ ] **Checklist included in README.md:** Include the project's checklist in the README.md file. Mark all implemented features to provide a clear overview of the project's completion status.
 
