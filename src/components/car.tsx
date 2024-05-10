@@ -4,6 +4,7 @@ import { toggleEngine } from "../service/api.service";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { setBestTime, setStatus, setWinner } from "../slice";
+import { Button } from "../ui";
 
 interface CarProps {
   car: CarI;
@@ -22,7 +23,7 @@ const Car: React.FC<CarProps> = ({ car, removeHandler, selectedCarHandler }) => 
     if(status == 'started'){
       startEngineHandler(car.id)
     }
-    if(status == 'reset'){
+    if(status == 'reset' && engineStatus == 'started'){
       stopEngineHandler(car.id)
     }
   }, [status])
@@ -60,58 +61,40 @@ const Car: React.FC<CarProps> = ({ car, removeHandler, selectedCarHandler }) => 
     }
   };
   const stopEngineHandler = async (id: number) => {
-    await toggleEngine(id, "stopped");
-    setEngineStatus('stopped')
-    clearInterval(ref.current as NodeJS.Timeout);
     setPosition(0);
     setTransition(0);
+    setEngineStatus('stopped')
+    clearInterval(ref.current as NodeJS.Timeout);
+    toggleEngine(id, "stopped");
+    dispatch(setStatus(null))
   };
 
   return (
     <div className="py-3 w-full flex">
-      <div className="w-[120px] flex items-center">
+      <div className="w-[120px] max-[768px]:w-[105px] flex items-center">
         <div>
           <div className="inline-flex gap-2 flex-col me-2">
-            <button
-              onClick={() => selectedCarHandler(car.id)}
-              className="px-3 py-1 border-2 text-[#BCE4ED] border-[#BCE4ED] text-[12px] rounded-md uppercase"
-              style={{ boxShadow: "0 0 5px 1px #BCE4ED" }}
-            >
+            <Button color="#BCE4ED" onClick={() => selectedCarHandler(car.id)} classes="text-[12px] px-3 py-1 max-[768px]:text-[10px] max-[768px]:px-2">
               select
-            </button>
-            <button
-              onClick={() => removeHandler(car.id)}
-              className="px-3 py-1 border-2 text-[12px] border-[#985FB0] text-[#985fb0] rounded-md uppercase"
-              style={{ boxShadow: "0 0 5px 1px #985FB0" }}
-            >
+            </Button>
+            <Button color="#985FB0" onClick={() => removeHandler(car.id)} classes="text-[12px] px-3 py-1 max-[768px]:text-[10px] max-[768px]:px-2">
               remove
-            </button>
+            </Button>
           </div>
           <div className="inline-flex flex-col gap-2">
-            <button
-              onClick={() => startEngineHandler(car.id)}
-              className="px-2 py-1 border-2 text-[#f0ff6c] disabled:opacity-50 border-[#f0ff6c] text-[12px] rounded-md uppercase"
-              style={{ boxShadow: "0 0 5px 1px #f0ff6c" }}
-              disabled={engineStatus == 'started'}
-            >
+            <Button color="#f0ff6c" disabled={engineStatus == 'started'} onClick={() => startEngineHandler(car.id)} classes="text-[12px] px-2 py-1 max-[768px]:text-[10px] max-[768px]:px-2">
               A
-            </button>
-            <button
-              onClick={() => stopEngineHandler(car.id)}
-              disabled={engineStatus == 'stopped'}
-              className="px-2 py-1 border-2 text-[12px] disabled:opacity-50 border-[#69B973] text-[#69B973] rounded-md uppercase"
-              style={{ boxShadow: "0 0 5px 1px #69B973" }}
-            >
+            </Button>
+            <Button color="#69B973" disabled={engineStatus == 'stopped'} onClick={() => stopEngineHandler(car.id)} classes="text-[12px] px-2 py-1 max-[768px]:text-[10px] max-[768px]:px-2">
               B
-            </button>
+            </Button>
           </div>
         </div>
       </div>
-      <div className="ps-[150px] relative pe-[60px]" style={{ width: "calc(100% - 120px)" }}>
+      <div className="ps-[150px] max-[768px]:ps-[120px] relative max-[768px]:pe-[30px] pe-[60px]" style={{ width: "calc(100% - 120px)" }}>
         <div className="absolute top-[50%] translate-y-[-50%] z-[10]" style={{ left: `${position}%`, transition: `left ${transition}s linear` }}>
           <svg
-            width="90"
-            height="48"
+            className="w-[90px] max-[768px]:w-[70px]"
             viewBox="0 0 105 63"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +109,7 @@ const Car: React.FC<CarProps> = ({ car, removeHandler, selectedCarHandler }) => 
             <ellipse cx="70.1341" cy="59.7241" rx="1.5" ry="3" transform="rotate(42.57 70.1341 59.7241)" fill={car.color} />
           </svg>
         </div>
-        <div className="border-t border-b text-white text-3xl p-5 font-thin uppercase opacity-75">{car.name}</div>
+        <div className="border-t border-b text-white text-3xl max-[768px]:text-2xl p-5 font-thin uppercase opacity-75">{car.name}</div>
       </div>
     </div>
   );

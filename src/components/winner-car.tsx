@@ -27,8 +27,7 @@ const WinnerCar: React.FC<CarProps> = ({car}) => {
       <td className="p-2">{car.id}</td>
       <td className="py-3">
         <svg
-            width="90"
-            height="48"
+            className="w-[90px] max-[768px]:w-[70px]"
             viewBox="0 0 105 63"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +42,7 @@ const WinnerCar: React.FC<CarProps> = ({car}) => {
             <ellipse cx="70.1341" cy="59.7241" rx="1.5" ry="3" transform="rotate(42.57 70.1341 59.7241)" fill={carInfo && carInfo.color} />
           </svg>
       </td>
-      <td className="p-2">{carInfo && carInfo.name}</td>
+      <td className="p-2 max-[768px]:text-sm">{carInfo && carInfo.name}</td>
       <td className="p-2">{car.wins}</td>
       <td className="p-2">{car.time}</td>
     </tr>

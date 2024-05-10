@@ -51,6 +51,7 @@ const Winners = () => {
       setPage(Math.ceil(totalCount / limit));
     }
   };
+
   const filterHandler = (name: string, value: string) => {
     switch (name) {
       case "order":
@@ -63,7 +64,7 @@ const Winners = () => {
   };
   return (
     <div className="p-3">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center max-[768px]:flex-col justify-between mb-2">
         <h1 className="text-[3.5rem] uppercase text-white" style={{ textShadow: "1px 1px 15px #B833E8" }}>
           winners
         </h1>
@@ -73,8 +74,8 @@ const Winners = () => {
             <select
               name="sort"
               onChange={(e) => filterHandler(e.target.name, e.target.value)}
-              className="bg-transparent rounded w-[120px] text-[#69B973] outline-none border-white border px-3 py-2"
-              style={{ boxShadow: "0 0 10px #69B973, inset 0 0 10px #69B973", textShadow: "-2px -2px 5px #69B973" }}
+              className="bg-transparent rounded-md w-[120px] text-[#69B973] outline-none border-white border-2 px-3 py-2"
+              style={{ boxShadow: "0 0 5px 1px #69B973", borderColor: "#69B973", color: '#69B973'}}
             >
               <option className="text-black" value="id">
                 ID
@@ -92,8 +93,8 @@ const Winners = () => {
             <select
               name="order"
               onChange={(e) => filterHandler(e.target.name, e.target.value)}
-              className="bg-transparent rounded w-[120px] text-white outline-none border-white border px-3 py-2"
-              style={{ boxShadow: "0 0 10px #B846FB, inset 0 0 10px #B846FB", textShadow: "-2px -2px 5px #B846FB" }}
+              className="bg-transparent rounded-md w-[120px] text-white outline-none border-white border-2 px-3 py-2"
+              style={{ boxShadow: "0 0 5px 1px #B846FB", borderColor: "#B846FB", color: '#B846FB'}}
             >
               <option className="text-black" value="ASC">
                 A-Z
@@ -108,11 +109,11 @@ const Winners = () => {
       <table className="w-full text-white table-fixed">
         <thead style={{ boxShadow: "0 0 20px #d574ff, inset 0 0 12px #d574ff, 0 0 0 2px #fff", borderRadius: "8px" }}>
           <tr>
-            <th className="text-start p-2 uppercase font-light  text-lg">№</th>
-            <th className="text-start p-2 uppercase font-light  text-lg">car</th>
-            <th className="text-start p-2 uppercase font-light  text-lg">name</th>
-            <th className="text-start p-2 uppercase font-light text-[#71CE86] text-lg">wins</th>
-            <th className="text-start p-2 uppercase font-light text-[#EEEFAB] text-lg">best time(seconds)</th>
+            <th className="text-start p-2 uppercase font-light text-lg max-[768px]:text-sm">№</th>
+            <th className="text-start p-2 uppercase font-light text-lg max-[768px]:text-sm">car</th>
+            <th className="text-start p-2 uppercase font-light text-lg max-[768px]:text-sm">name</th>
+            <th className="text-start p-2 uppercase font-light text-[#71CE86] text-lg max-[768px]:text-sm">wins</th>
+            <th className="text-start p-2 uppercase font-light text-[#EEEFAB] text-lg max-[768px]:text-sm">best time(seconds)</th>
           </tr>
         </thead>
         <tbody>{winnerCars && winnerCars.map((w) => <WinnerCar car={w} key={w.id} />)}</tbody>

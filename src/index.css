@@ -12,7 +12,7 @@ html{
 body{
   font-family: "Allerta Stencil", sans-serif;
   margin: 0;
-  background-image: url('./assets/wall.webp');
+  background-image: url('./assets/wall.jpg');
   min-height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
